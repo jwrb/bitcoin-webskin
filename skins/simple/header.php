@@ -1,63 +1,32 @@
 <?php
 /*
-	Bitcoin Webskin - an open source PHP web interface to bitcoind
-	Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
+  Bitcoin Webskin - an open source PHP web interface to bitcoind
+  Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
+  Copyright (c) 2015 Joshua Baldwin
 */
-?><html><head><title>Bitcoin Webskin</title>
-<style type="text/css">
-body {
-	font-size:15px;
-	font-family:sans-serif;	
-	color:#000000;
-	background-color:#F6FFF6;
-	margin:10px;
-}
+?>
+<html>
+  <head>
+    <title>Bitcoin Webskin</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+  </head>
+  <body>
+  <div class="container">
+    <pre>
+    <a href="./">Home</a>    <?php print date('r'); ?> 
+    <?php if( $this->wallet_is_open ) {
 
-a {
-	text-decoration:  none;
-}
+        print 'Balance: <b>' . $this->info['balance'] . '</b>'
+        . '   Blocks: ' . $this->info['blocks']     
+        . '   Connections: ' . $this->info['connections'] 
+        . '   Network: ' . SERVER_NETWORK . ($this->info['testnet'] ? ' Testnet' : '')    
+          //. ' Pay Tx Fee: ' . $this->num($this->info['paytxfee']) 
+            //. ' Oldest key: ' . $this->info['keypoololdest_date']
+        ;
 
-a:hover, a:active { 	
-	color: #000000;
-	background-color: #FFFFCC;
-}
-
-table {
-	border-collapse:collapse;
-		
-}
-table, td {
-	border: 1px solid black;
-	padding:3px;	
-	font-size:14px;
-	font-family:sans-serif;		
-}
-
-.address {
-	font-size:14px;
-	font-family:monospace;	
-}
-
-.amount, .conf {
-	text-align: right;
-}
-
-</style>
-</head><body>
-<pre><a href="./">Bitcoin Webskin</a>    <?php print date('r'); ?> 
-<?php	if( $this->wallet_is_open ) {
-
-		print 'Balance: <b>' . $this->info['balance'] . '</b>'
-		. '   Blocks: ' . $this->info['blocks'] 		
-		. '   Connections: ' . $this->info['connections'] 
-		. '   Network: ' . SERVER_NETWORK . ($this->info['testnet'] ? ' Testnet' : '') 		
-	    //. ' Pay Tx Fee: ' . $this->num($this->info['paytxfee']) 
-        //. ' Oldest key: ' . $this->info['keypoololdest_date']
-		;
-
-	} else {
-		//if( !$this->hide_wallet_errors ) { 	
-			print 'Not Connected to Wallet';
-		//}
-	}
-?></pre>
+      } else {
+        //if( !$this->hide_wallet_errors ) {  
+          print 'Not Connected to Wallet';
+        //}
+      }
+    ?></pre>

@@ -1,9 +1,9 @@
 <?php $this->template('header'); ?>
 <pre><a href="./?a=server.control">Server Control</a> 
 <?php 
-	if( isset($this->info['control'] ) ) {
-		print "\n" . $this->info['control'] . "\n";
-	}
+  if( isset($this->info['control'] ) ) {
+    print "\n" . $this->info['control'] . "\n";
+  }
 ?> 
 <a href="./?a=server.control&a1=view">View Server Process</a> 
 

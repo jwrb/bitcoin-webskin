@@ -1,7 +1,7 @@
 <?php
 /*
-	Bitcoin Webskin - an open source PHP web interface to bitcoind
-	Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
+  Bitcoin Webskin - an open source PHP web interface to bitcoind
+  Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
 */
 ?><?php $this->template('header'); ?>
 <p><a href="./?a=sendescrow">sendescrow</a></p>
@@ -47,13 +47,13 @@ Amount: <?php print @$this->num( $this->amount ); ?> Coins
 </pre>
 <?
 
-	}
+  }
 
-	if( isset( $this->sendescrow ) ) {
-		print '<pre>Send Escrow Result:<br />'; 
-		print_r($this->sendescrow); 		
-		print '</pre>';
-	}
-		
+  if( isset( $this->sendescrow ) ) {
+    print '<pre>Send Escrow Result:<br />'; 
+    print_r($this->sendescrow);     
+    print '</pre>';
+  }
+    
 ?> 
 <?php $this->template('footer'); ?>

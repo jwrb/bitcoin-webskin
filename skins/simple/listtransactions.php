@@ -1,20 +1,20 @@
 <?php
 /*
-	Bitcoin Webskin - an open source PHP web interface to bitcoind
-	Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
+  Bitcoin Webskin - an open source PHP web interface to bitcoind
+  Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
 */
 ?><?php $this->template('header'); ?>
 
 <p>Transactions: &nbsp; &nbsp; Account: <?php 
-	switch( @$this->account ) {
-		case '*': print 'ALL'; break;
-		case '': print '<em>DEFAULT</em>'; break;
-		default: print @$this->account; break;
-	}
+  switch( @$this->account ) {
+    case '*': print 'ALL'; break;
+    case '': print '<em>DEFAULT</em>'; break;
+    default: print @$this->account; break;
+  }
 ?> &nbsp; &nbsp; Count: <?php 
-	@$this->count == 9999999
-		? print 'ALL ' . @$this->info['transactions_count']
-		: print 'Limit ' . @$this->count;
+  @$this->count == 9999999
+    ? print 'ALL ' . @$this->info['transactions_count']
+    : print 'Limit ' . @$this->count;
 ?> &nbsp; &nbsp; Start From: <?php
      @$this->from == 0
           ? print 'The newest transaction.'
@@ -33,25 +33,25 @@
   <td>Transaction ID</td>
  </tr>
 <?php
-	if( !count(@$this->listtransactions) ) {
-		print '<tr><td colspan="8">No Transactions Found</td></tr>';
-	} else {
-		foreach ($this->listtransactions AS $key => $value) {
-			print '<tr>'
-			. '<td>' .@$value['category'] . '</td>'
-			. '<td class="amount">' .$value['amount'] . '</td>'
-			. '<td class="conf">' . $value['status'] . '</td>'
-			. '<td><a href="./?a=listtransactions&account=' 
-				. urlencode($value['account']) . '">' . $value['account'] . '</a></td>'
-			. '<td>' . $value['datetime'] . '</td>'
-			. '<td class="address">' . (isset($value['address']) ? $value['address'] : '-') . '</td>'
-			. '<td>' . (isset($value['txid'])
-					? '<a href="?a=gettransaction&txid=' . urlencode($value['txid']) . '">'
-						. $value['txid_short'] . '</a>'
-					: '-')
-			. '</td></tr>';
-		} // end each transaction
-	} // end if transactions
+  if( !count(@$this->listtransactions) ) {
+    print '<tr><td colspan="8">No Transactions Found</td></tr>';
+  } else {
+    foreach ($this->listtransactions AS $key => $value) {
+      print '<tr>'
+      . '<td>' .@$value['category'] . '</td>'
+      . '<td class="amount">' .$value['amount'] . '</td>'
+      . '<td class="conf">' . $value['status'] . '</td>'
+      . '<td><a href="./?a=listtransactions&account=' 
+        . urlencode($value['account']) . '">' . $value['account'] . '</a></td>'
+      . '<td>' . $value['datetime'] . '</td>'
+      . '<td class="address">' . (isset($value['address']) ? $value['address'] : '-') . '</td>'
+      . '<td>' . (isset($value['txid'])
+          ? '<a href="?a=gettransaction&txid=' . urlencode($value['txid']) . '">'
+            . $value['txid_short'] . '</a>'
+          : '-')
+      . '</td></tr>';
+    } // end each transaction
+  } // end if transactions
 ?>
 </table>
 

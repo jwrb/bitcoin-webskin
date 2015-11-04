@@ -1,7 +1,7 @@
 <?php
 /*
-	Bitcoin Webskin - an open source PHP web interface to bitcoind
-	Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
+  Bitcoin Webskin - an open source PHP web interface to bitcoind
+  Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
 */
 ?><?php $this->template('header'); ?>
 <p><a href="./?a=sendtoaddress">sendtoaddress</a></p>
@@ -48,16 +48,16 @@ Amount: <?php print @$this->num( $this->amount ); ?> Coins
 </pre>
 <?php
 
-	}
+  }
 
 
-	if( isset( $this->sendtoaddress ) ) {
-		print '<pre>Send Result:<br />'; 
-		print_r($this->sendtoaddress); 
-		print '<p><a href="./?a=gettransaction&txid=' . urlencode($this->sendtoaddress) 
-		. '">gettransaction( ' . $this->sendtoaddress . ' )</a>';
-		print '</pre>';
-	}
-		
+  if( isset( $this->sendtoaddress ) ) {
+    print '<pre>Send Result:<br />'; 
+    print_r($this->sendtoaddress); 
+    print '<p><a href="./?a=gettransaction&txid=' . urlencode($this->sendtoaddress) 
+    . '">gettransaction( ' . $this->sendtoaddress . ' )</a>';
+    print '</pre>';
+  }
+    
 ?> 
 <?php $this->template('footer'); ?>

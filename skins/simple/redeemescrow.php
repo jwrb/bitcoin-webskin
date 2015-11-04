@@ -1,7 +1,7 @@
 <?php
 /*
-	Bitcoin Webskin - an open source PHP web interface to bitcoind
-	Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
+  Bitcoin Webskin - an open source PHP web interface to bitcoind
+  Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
 */
 ?><?php $this->template('header'); ?>
 <p><a href="./?a=redeemescrow">redeemescrow</a></p>
@@ -51,13 +51,13 @@ To Address: <?php print @$this->num( $this->address ); ?>
 </pre>
 <?
 
-	}
+  }
 
-	if( isset( $this->redeemescrow ) ) {
-		print '<pre>Redeem Escrow Result:<br />'; 
-		print_r($this->redeemescrow); 		
-		print '</pre>';
-	}
-		
+  if( isset( $this->redeemescrow ) ) {
+    print '<pre>Redeem Escrow Result:<br />'; 
+    print_r($this->redeemescrow);     
+    print '</pre>';
+  }
+    
 ?> 
 <?php $this->template('footer'); ?>
