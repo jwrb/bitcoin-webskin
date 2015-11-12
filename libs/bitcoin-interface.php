@@ -69,11 +69,11 @@ interface Paycoin extends Bitcoin {
 
     // Staking Controls
     public function xpy_listscrapeaddresses();
-    public function xpy_getscrapeaddress();
-    public function xpy_deletescrapeaddress();
-    public function xpy_setscrapeaddress();
+    public function xpy_getscrapeaddress( $address );
+    public function xpy_deletescrapeaddress( $address );
+    public function xpy_setscrapeaddress( $address, $account );
     public function xpy_getbestheight();
-    public function xpy_listminting();
+    public function xpy_listminting( $count=10, $from=0 );
 
 } // End Paycoin interface
 

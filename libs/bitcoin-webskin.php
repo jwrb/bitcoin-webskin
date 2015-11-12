@@ -296,17 +296,17 @@ class BitcoinWebskin {
         $this->count = $this->get_get('count', 9999999);
         $this->from = $this->get_get('from', 0);
 
-        $this->listminting = $this->wallet->listminting(
+        $this->xpy_listminting = $this->wallet->xpy_listminting(
           (int)    $this->count,
           (int)    $this->from
         ); 
 
-        $this->info['minting_amount'] = sizeof( $this->listminting );
+        $this->info['minting_amount'] = sizeof( $this->xpy_listminting );
         
-        $this->listminting = @array_reverse( $this->listminting );
+        $this->listminting = @array_reverse( $this->xpy_listminting );
 
-        $this->listminting = @array_walk( 
-          $this->listminting, 
+        $this->xpy_listminting = @array_walk( 
+          $this->xpy_listminting, 
           array( &$this, 'post_process_listminting') 
         );
         
@@ -611,83 +611,73 @@ class BitcoinWebskin {
   private function post_process_listminting(&$item, $key) {
   
     $item['datetime'] = date('r', $item['time']);
-  
+
     if( isset($item['amount']) ) {
       $item['amount'] = $this->num($item['amount']);
     } else {
       $item['amount'] = $this->num(0);
     }
     
-    if( isset($item['txid']) ) {
-      $item['txid_short'] = substr( $item['txid'], 0, 10) . '...'; 
-    }
-    
-    if( $item['account'] == '' ) { 
-      $item['account'] = '""'; 
-    }
-    
-    if( !isset($item['confirmations'])  ) { 
-      $item['confirmations'] = 0;
-    }
-    
-    if(    ( $item['category'] != 'immature' && $item['confirmations'] >= 6 )
-      || ( $item['category'] == 'immature' && $item['confirmations'] >= 120 )
-      || $item['category'] == 'generate'
-    ) { 
-      $item['status'] = $item['confirmations'] . ' confirmations';
-    } else { 
-      $item['status'] = $item['confirmations'] . '/unconfirmed';
-    }
-    
-
-    if(    $item['category'] == 'move'
-      || $item['category'] == 'orphan'
-    ) { 
-      $item['status'] = $item['confirmations'];
-    }  
-    
-    
-    @$this->info['transactions_amount'] += $item['amount'];
-    
-    switch( $item['category'] ) { 
-      case 'immature':  
-        @$this->info['immature_count']++;
-        @$this->info['immature_amount'] += $item['amount'];
-        break;
-      case 'generate':
-        @$this->info['generate_count']++;
-        @$this->info['generate_amount'] += $item['amount'];
-        break;      
-      case 'orphan':
-        @$this->info['orphan_count']++;
-        @$this->info['orphan_amount'] += $item['amount'];
-        break;        
-      case 'move':
-        @$this->info['move_count']++;
-        @$this->info['move_amount'] += $item['amount'];
-        break;        
-      case 'receive':
-        @$this->info['receive_count']++;
-        @$this->info['receive_amount'] += $item['amount'];
-        break;        
-      case 'send':
-        @$this->info['send_count']++;
-        @$this->info['send_amount'] += $item['amount'];
-        break;        
-      default:
-        @$this->info['unknown_count']++;
-        @$this->info['unknown_amount'] += $item['amount'];
-        break;        
+    if( isset($item['attempts']) ) {
+      $item['attempts'] = $this->num($item['attempts']);
+    } else {
+      $item['attempts'] = $this->num(0);
     }
 
-    @$this->info['transactions_amount'] = $this->num($this->info['transactions_amount']);
-    @$this->info['immature_amount'] = $this->num($this->info['immature_amount']);
-    @$this->info['generate_amount'] = $this->num($this->info['generate_amount']);
-    @$this->info['orphan_amount'] = $this->num($this->info['orphan_amount']);
-    @$this->info['move_amount'] = $this->num($this->info['move_amount']);
-    @$this->info['receive_amount'] = $this->num($this->info['receive_amount']);
-    @$this->info['send_amount'] = $this->num($this->info['send_amount']);
-    @$this->info['unknown_amount'] = $this->num($this->info['unknown_amount']);
+    if( isset($item['age-in-day']) ) {
+      $item['age-in-day'] = $this->num($item['age-in-day']);
+    } else {
+      $item['age-in-day'] = $this->num(0);
+    }
+
+    if( isset($item['coin-day-weight']) ) {
+      $item['coin-day-weight'] = $this->num($item['coin-day-weight']);
+    } else {
+      $item['coin-day-weight'] = $this->num(0);
+    }
+
+    if( isset($item['input-txid']) ) {
+      $item['txid_short'] = substr( $item['input-txid'], 0, 10) . '...'; 
+    }
+
+    if( isset($item['search-interval-in-sec']) ) {
+      $item['search-interval-in-sec'] = $this->num($item['search-interval-in-sec']);
+    } else {
+      $item['search-interval-in-sec'] = $this->num(0);
+    }
+
+    if( isset($item['minting-probability-90d']) ) {
+      $item['minting-probability-90d'] = $this->num($item['minting-probability-90d']);
+    } else {
+      $item['minting-probability-90d'] = $this->num(0);
+    }
+
+    if( isset($item['minting-probability-30d']) ) {
+      $item['minting-probability-30d'] = $this->num($item['minting-probability-30d']);
+    } else {
+      $item['minting-probability-30d'] = $this->num(0);
+    }
+
+    if( isset($item['minting-probability-24h']) ) {
+      $item['minting-probability-24h'] = $this->num($item['minting-probability-24h']);
+    } else {
+      $item['minting-probability-24h'] = $this->num(0);
+    }
+
+    if( isset($item['minting-probability-10min']) ) {
+      $item['minting-probability-10min'] = $this->num($item['minting-probability-10min']);
+    } else {
+      $item['minting-probability-10min'] = $this->num(0);
+    }
+
+    if( isset($item['proof-of-stake-difficulty']) ) {
+      $item['proof-of-stake-difficulty'] = $this->num($item['proof-of-stake-difficulty']);
+    } else {
+      $item['proof-of-stake-difficulty'] = $this->num(0);
+    }
+
+    @$this->info['minting_amount'] += $item['amount'];
+    @$this->info['minting_amount'] = $this->num($this->info['minting_amount']);
     
   } // end post_process_listminting
     

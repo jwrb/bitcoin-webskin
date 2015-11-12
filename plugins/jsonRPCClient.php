@@ -332,9 +332,7 @@ class jsonRPCClientControler implements Bitcoin {
       $arraydata = array_reduce($this->tube->getpeerinfo(), function ($a, $b) {
         return @$a['height'] > $b['height'] ? $a : $b ;
       });
-
       return $arraydata['height'];
-
     } catch( Exception $e ) {
       return 'xpy_getbestheight() Error: ' . $e->getMessage();
     }
@@ -371,6 +369,14 @@ class jsonRPCClientControler implements Bitcoin {
       return 'listscrapeaddresses() Error: ' . $e->getMessage();
     }
   }
+
+  public function xpy_listminting( $count=10, $from=0 ) {
+    try { 
+      return $this->tube->listminting( (int)$count, (int)$from );
+    } catch( Exception $e ) {
+      return 'listminting() Error: ' . $e->getMessage();
+    }
+  } 
 
   // Namecoin Functions
   public function name_list( $name ) { 
