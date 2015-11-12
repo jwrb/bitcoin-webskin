@@ -60,6 +60,23 @@ interface Bitcoin extends Webskin {
 
 } // End Bitcoin interface
 
+interface Paycoin extends Bitcoin {
+
+    const paycoin_version = 70004;
+
+    // Paycoin Specifics
+    public function getpeerinfo();
+
+    // Staking Controls
+    public function xpy_listscrapeaddresses();
+    public function xpy_getscrapeaddress();
+    public function xpy_deletescrapeaddress();
+    public function xpy_setscrapeaddress();
+    public function xpy_getbestheight();
+    public function xpy_listminting();
+
+} // End Paycoin interface
+
 interface Namecoin extends Bitcoin {
 
     const namecoin_version = 32150;

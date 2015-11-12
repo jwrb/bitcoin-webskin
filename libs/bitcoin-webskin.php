@@ -15,7 +15,7 @@ require_once 'config.php';
 
 class BitcoinWebskin {
 
-  public $debug = 1;  // Debug notices  1=on  0=off
+  public $debug = 0;  // Debug notices  1=on  0=off
   
   private $wallet_is_open; // Current status of wallet connection   true/false
   
@@ -286,10 +286,42 @@ class BitcoinWebskin {
         return 'redeemescrow'; break;
 
 
+      case 'listminting':
+      
+        if( !$this->open_wallet() ) {
+          $this->debug('ERROR: listminting: open_wallet failed');
+          return 'listminting';
+        }
+        
+        $this->count = $this->get_get('count', 9999999);
+        $this->from = $this->get_get('from', 0);
+
+        $this->listminting = $this->wallet->listminting(
+          (int)    $this->count,
+          (int)    $this->from
+        ); 
+
+        $this->info['minting_amount'] = sizeof( $this->listminting );
+        
+        $this->listminting = @array_reverse( $this->listminting );
+
+        $this->listminting = @array_walk( 
+          $this->listminting, 
+          array( &$this, 'post_process_listminting') 
+        );
+        
+        return 'listminting'; break;
+
       case 'getinfo': 
         $this->open_wallet(); 
         $this->getinfo = @$this->info; 
+        $this->xpy_getbestheight = $this->wallet->xpy_getbestheight();
         return 'getinfo'; break;
+
+      case 'overview': 
+        $this->open_wallet(); 
+        $this->getinfo = @$this->info; 
+        return 'overview'; break;
       
       case 'getblockcount': 
       case 'getblocknumber': 
@@ -369,55 +401,7 @@ class BitcoinWebskin {
           (string) $this->get_get('command', '')        
         ); 
         return 'help'; break;
-      
-      
-      // Namecoin
-      case 'name_list':
-        $this->open_wallet();       
-        $this->name_list = $this->wallet->name_list(
-          (string) $this->get_get('name', '')               
-        ); 
-        return 'debug'; break;    
 
-      case 'name_new':
-        $this->open_wallet();       
-        $this->name_new = $this->wallet->name_new(
-          (string) $this->get_get('name', '')               
-        ); 
-        return 'debug'; break;
-
-      case 'name_firstupdate':
-        $this->open_wallet();       
-        $this->name_firstupdate = $this->wallet->name_firstupdate(
-          (string) $this->get_get('name', ''),                
-          (string) $this->get_get('rand', ''),                
-          (string) $this->get_get('tx', ''),                
-          (string) $this->get_get('value', '')                
-        ); 
-        return 'debug'; break;
-        
-      case 'name_update':
-        $this->open_wallet();       
-        $this->name_update = $this->wallet->name_update(
-          (string) $this->get_get('name', ''),                              
-          (string) $this->get_get('value', ''),
-          (string) $this->get_get('address', '')                    
-        ); 
-        return 'debug'; break;
-        
-      case 'name_scan':
-        $this->open_wallet();       
-        $this->name_scan = $this->wallet->name_scan(
-          (string) $this->get_get('start_name', ''),        
-          (int) $this->get_get('max_returned', '')        
-        ); 
-        return 'debug'; break;
-        
-      case 'name_clean':
-        $this->open_wallet();       
-        $this->name_clean = $this->wallet->name_clean(); 
-        return 'debug'; break;            
-        
       case 'deletetransaction':
         $this->open_wallet();       
         $this->deletetransaction = $this->wallet->deletetransaction(
@@ -489,93 +473,7 @@ class BitcoinWebskin {
         
         return 'server.control';
         break;
-        
-      // misc
-      
-      case 'PHPCoinAddress':
-      
-        print 'DEBUG PHPCoinAddress';
-        
-        $lib = 'plugins/PHPCoinAddress.php';
-        if( !is_readable($lib) ) { 
-          print 'ERROR: missing ' . $lib; exit;
-        }
-        require_once($lib);
 
-        $debug = $this->get_get('debug', '');
-        if( $debug ) { 
-          CoinAddress::set_debug(true);
-        }
-        
-        $reuse_keys = $this->get_get('reuse_keys', '');
-        if( $reuse_keys ) { 
-          CoinAddress::set_reuse_keys(true);
-        }
-        $coins = @$_GET['coin'];
-        
-        if( !$coins || !is_array($coins) ) { 
-          print 'ERROR: no coin type'; exit;
-        }
-        
-
-        while( list(,$x) = each($coins) ) {
-          switch( $x ) { 
-            case 'bitcoin': $bitcoin = CoinAddress::bitcoin();break;
-            case 'bitcoin_testnet': $bitcoin_testnet = CoinAddress::bitcoin_testnet();break;
-            case 'namecoin': $namecoin = CoinAddress::namecoin();break;
-            case 'namecoin_testnet': $namecoin_testnet = CoinAddress::namecoin_testnet();break;
-            case 'litecoin': $litecoin = CoinAddress::litecoin();break;
-            case 'litecoin_testnet': $litecoin_testnet = CoinAddress::litecoin_testnet();break;
-            case 'devcoin': $devcoin = CoinAddress::devcoin();break;
-            case 'devcoin_testnet': $devcoin_testnet = CoinAddress::devcoin_testnet();break;
-            case 'ppcoin': $ppcoin = CoinAddress::ppcoin();break;
-            case 'ppcoin_testnet': $ppcoin_testnet = CoinAddress::ppcoin_testnet();break;
-          }
-        }
-        
-        $this->PHPCoinAddress = "
-<HR><pre>
-bitcoin : " . @$bitcoin['private'] .' ' . @$bitcoin['public'] . "
-namecoin: " . @$namecoin['private'] .' ' . @$namecoin['public'] . "
-devcoin : " . @$devcoin['private'] .' ' . @$devcoin['public'] . "
-ppcoin  : " . @$ppcoin['private'] .' ' . @$ppcoin['public'] . "
-
-bitcoin_testnet : " . @$bitcoin_testnet['private'] .' ' . @$bitcoin_testnet['public'] . "
-namecoin_testnet: " . @$namecoin_testnet['private'] .' ' . @$namecoin_testnet['public'] . "
-devcoin_testnet : " . @$devcoin_testnet['private'] .' ' . @$devcoin_testnet['public'] . "
-ppcoin_testnet  : " . @$ppcoin_testnet['private'] .' ' . @$ppcoin_testnet['public'] . "
-
-debug:$debug 
-reuse_keys:$reuse_keys 
-</pre>";
-        
-        
-        return 'debug';
-        //return 'PHPCoinAddress';
-        break;
-        
-      case 'mtgox':
-      
-        include_once('plugins/mtgox.php');
-        
-        $this->info['mtgox_ticker'] = mtgox_get_ticker();
-                      //= null_data_ticker();
-                      
-        switch( $this->get_get('a1', '') ) {
-          case 'depth':
-            $this->info['mtgox_depth']  = mtgox_get_depth();
-                            //= null_data_depth();
-            break;
-          case 'trades':
-            $this->info['mtgox_trades'] = mtgox_get_trades();
-                          //= null_data_trades();   
-            break;
-        }
-        
-        return 'mtgox';
-        break;      
-  
-        
     } // end switch
 
   } // end get_template()
@@ -697,9 +595,6 @@ reuse_keys:$reuse_keys
         @$this->info['unknown_amount'] += $item['amount'];
         break;        
     }
-    
-    
-    
 
     @$this->info['transactions_amount'] = $this->num($this->info['transactions_amount']);
     @$this->info['immature_amount'] = $this->num($this->info['immature_amount']);
@@ -711,6 +606,90 @@ reuse_keys:$reuse_keys
     @$this->info['unknown_amount'] = $this->num($this->info['unknown_amount']);
     
   } // end post_process_listtransaction
+    
+
+  private function post_process_listminting(&$item, $key) {
+  
+    $item['datetime'] = date('r', $item['time']);
+  
+    if( isset($item['amount']) ) {
+      $item['amount'] = $this->num($item['amount']);
+    } else {
+      $item['amount'] = $this->num(0);
+    }
+    
+    if( isset($item['txid']) ) {
+      $item['txid_short'] = substr( $item['txid'], 0, 10) . '...'; 
+    }
+    
+    if( $item['account'] == '' ) { 
+      $item['account'] = '""'; 
+    }
+    
+    if( !isset($item['confirmations'])  ) { 
+      $item['confirmations'] = 0;
+    }
+    
+    if(    ( $item['category'] != 'immature' && $item['confirmations'] >= 6 )
+      || ( $item['category'] == 'immature' && $item['confirmations'] >= 120 )
+      || $item['category'] == 'generate'
+    ) { 
+      $item['status'] = $item['confirmations'] . ' confirmations';
+    } else { 
+      $item['status'] = $item['confirmations'] . '/unconfirmed';
+    }
+    
+
+    if(    $item['category'] == 'move'
+      || $item['category'] == 'orphan'
+    ) { 
+      $item['status'] = $item['confirmations'];
+    }  
+    
+    
+    @$this->info['transactions_amount'] += $item['amount'];
+    
+    switch( $item['category'] ) { 
+      case 'immature':  
+        @$this->info['immature_count']++;
+        @$this->info['immature_amount'] += $item['amount'];
+        break;
+      case 'generate':
+        @$this->info['generate_count']++;
+        @$this->info['generate_amount'] += $item['amount'];
+        break;      
+      case 'orphan':
+        @$this->info['orphan_count']++;
+        @$this->info['orphan_amount'] += $item['amount'];
+        break;        
+      case 'move':
+        @$this->info['move_count']++;
+        @$this->info['move_amount'] += $item['amount'];
+        break;        
+      case 'receive':
+        @$this->info['receive_count']++;
+        @$this->info['receive_amount'] += $item['amount'];
+        break;        
+      case 'send':
+        @$this->info['send_count']++;
+        @$this->info['send_amount'] += $item['amount'];
+        break;        
+      default:
+        @$this->info['unknown_count']++;
+        @$this->info['unknown_amount'] += $item['amount'];
+        break;        
+    }
+
+    @$this->info['transactions_amount'] = $this->num($this->info['transactions_amount']);
+    @$this->info['immature_amount'] = $this->num($this->info['immature_amount']);
+    @$this->info['generate_amount'] = $this->num($this->info['generate_amount']);
+    @$this->info['orphan_amount'] = $this->num($this->info['orphan_amount']);
+    @$this->info['move_amount'] = $this->num($this->info['move_amount']);
+    @$this->info['receive_amount'] = $this->num($this->info['receive_amount']);
+    @$this->info['send_amount'] = $this->num($this->info['send_amount']);
+    @$this->info['unknown_amount'] = $this->num($this->info['unknown_amount']);
+    
+  } // end post_process_listminting
     
 
   private function get_get( $get, $default='', $failonempty=false ) { // get a _GET
@@ -739,7 +718,7 @@ reuse_keys:$reuse_keys
   
   
   public function debug($msg) {
-    if( $this->debug ) { return; }
+    if( !$this->debug ) { return; }
     print "<pre>DEBUG: "; print_r($msg); print '</pre>';
   }
 

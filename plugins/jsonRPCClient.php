@@ -4,7 +4,7 @@
   Copyright (c) 2011 14STzHS8qjsDPtqpQgcnwWpTaSHadgEewS
 */
 
-class jsonRPCClientControler implements Bitcoin, Namecoin {
+class jsonRPCClientControler implements Bitcoin {
 
   // Control
   public function start($debug=false) {  
@@ -193,7 +193,7 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
     }
   }
 
-        public function sendescrow( $escrowaddrs, $amount, $comment='', $comment_to='' ) { 
+  public function sendescrow( $escrowaddrs, $amount, $comment='', $comment_to='' ) { 
     try { 
       return $this->tube->sendescrow( 
         (string)$escrowaddrs,
@@ -206,7 +206,7 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
     }
   }
 
-        public function redeemescrow( $inputtx, $address, $txhex='') { 
+  public function redeemescrow( $inputtx, $address, $txhex='') { 
     try { 
       return $this->tube->redeemescrow( 
         (string)$inputtx,
@@ -317,7 +317,62 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
     } 
   }
 
-  // Namecoin
+  // Paycoin Functions
+
+  public function getpeerinfo() { 
+    try {
+      return $this->tube->getpeerinfo(); 
+    } catch( Exception $e ) {
+      return 'getpeerinfo() Error: ' . $e->getMessage();
+    }
+  }
+
+  public function xpy_getbestheight() { // TODO: Write this function and calculate the best height on the chain
+    try {
+      $arraydata = array_reduce($this->tube->getpeerinfo(), function ($a, $b) {
+        return @$a['height'] > $b['height'] ? $a : $b ;
+      });
+
+      return $arraydata['height'];
+
+    } catch( Exception $e ) {
+      return 'xpy_getbestheight() Error: ' . $e->getMessage();
+    }
+  }
+
+  public function xpy_getscrapeaddress( $address ) {
+    try { 
+      return $this->tube->getscrapeaddress( (string)$address );
+    } catch( Exception $e ) {
+      return 'getscrapeaddress() Error: ' . $e->getMessage();
+    }
+  }
+
+  public function xpy_deletescrapeaddress( $address ) {
+    try { 
+      return $this->tube->deletescrapeaddress( (string)$address );
+    } catch( Exception $e ) {
+      return 'deletescrapeaddress() Error: ' . $e->getMessage();
+    }
+  }
+
+  public function xpy_setscrapeaddress( $address, $account ) {
+    try {
+      return $this->tube->setscrapeaddress( (string)$address, (string)$scrapeaddress );
+    } catch( Exception $e ) {
+      return 'setscrapeaddress() Error: ' . $e->getMessage();
+    }
+  }
+
+  public function xpy_listscrapeaddresses() {
+    try {
+      return $this->tube->listscrapeaddresses();
+    } catch( Exception $e ) {
+      return 'listscrapeaddresses() Error: ' . $e->getMessage();
+    }
+  }
+
+  // Namecoin Functions
   public function name_list( $name ) { 
     try { 
       return $this->tube->name_list( (string)$name);
@@ -325,7 +380,6 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
       return 'name_list() Error: ' . $e->getMessage();
     } 
   }
-
   public function name_scan( $start_name='', $max_returned ) { 
     try { 
       return $this->tube->name_scan( (string)$start_name, (int)$max_returned);
@@ -333,7 +387,6 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
       return 'name_scan() Error: ' . $e->getMessage();
     }
   }
-
   public function name_new( $name ) { 
     try { 
       return $this->tube->name_new( (string)$name);
@@ -341,7 +394,6 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
       return 'name_new() Error: ' . $e->getMessage();
     }
   }
-
   public function name_firstupdate( $name, $rand, $tx, $value ) {
     try { 
       return $this->tube->name_firstupdate( 
@@ -354,7 +406,6 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
       return 'name_firstupdate() Error: ' . $e->getMessage();
     }
   }
-
   public function name_update( $name, $value, $toaddress='' ) { 
     try { 
       return $this->tube->name_update( (string)$name, (string)$value, (string)$toaddress);
@@ -362,7 +413,6 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
       return 'name_update() Error: ' . $e->getMessage();
     }
   }
-
   public function name_clean() { 
     try { 
       return $this->tube->name_clean();
@@ -370,7 +420,6 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
       return 'name_clean() Error: ' . $e->getMessage();
     }
   }
-
   public function deletetransaction( $txid ) { 
     try { 
       return $this->tube->deletetransaction( (string)$txid);
@@ -378,7 +427,8 @@ class jsonRPCClientControler implements Bitcoin, Namecoin {
       return 'deletetransaction() Error: ' . $e->getMessage();
     }
   }
-  
+
+
 } // end class BitcoinPHP
 
 ?><?php
@@ -459,7 +509,7 @@ class jsonRPCClient {
   }
 
   public function debug($msg) {
-    if( $this->debug ) { return; }
+    if( !$this->debug ) { return; }
     print "<pre>DEBUG: "; print_r($msg); print '</pre>';
   } 
   
