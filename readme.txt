@@ -45,7 +45,6 @@ Files:
 /libs/bitcoin-interface.php - interface definition for bitcoind methods
 /plugins/jsonRPCClient.php - json RPC client with webskin interface
 /plugins/test.php - the debug interface
-/plugins/mtgox.php - plugin to mtgox json public api
 /skins/simple/*.php	- the simple html skin
 
 
