@@ -13,5 +13,9 @@
     print "<tr><td>$name</td><td>$val</td></tr>";
   }
     
+
+  print_r($this->xpy_getbestheight);
 ?></table>
+
+
 <?php $this->template('footer'); ?>

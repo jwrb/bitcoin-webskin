@@ -9,7 +9,6 @@
   if( isset($this->info['error']) && $this->info['error'] ) {
     print 'ERROR: ' . $this->info['error'] . '<pre><hr size="1" /><br /></pre>';
   }
-  
 ?> 
 </div>
 </body>

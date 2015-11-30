@@ -7,6 +7,7 @@
 
 <?php $this->template('header'); ?>
 
+<p><a href="./?a=overview">About Bitcoin Webskin</a></p>
 <p><a href="./?a=about">About Bitcoin Webskin</a></p>
 
 <p><a href="./?a=listtransactions&account=*&count=20">Last 20 Transactions</a>

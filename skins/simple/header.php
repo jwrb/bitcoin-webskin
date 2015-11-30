@@ -43,7 +43,7 @@
     <div class="pos-fix w-full" style="z-index:9999;top:0;">
       <div class="navbar navbar-default w-full bg-primary" role="navigation">
         <div class="navbar-header flex-wrap" style="height:60px;">
-          <div class="navbar-brand m-l-sm m-r no-padder m-t-b-a" style=
+          <a href="/" class="navbar-brand m-l-sm m-r no-padder m-t-b-a" style=
           "width:128px;height:40px;">
             <div class="svg-r-container">
               <svg class="svg-r" viewbox="0 0 128 40" xmlns=
@@ -63,7 +63,7 @@
                 fill="#FFFFFF" id="logo"></path>
               </g></svg>
             </div>
-          </div>
+          </a>
         </div>
         <ul class="nav navbar-nav pull-right text-u-c no-select" id=
         "navigation">
@@ -78,7 +78,7 @@
             "text-md text-white">History</span></a>
           </li>
           <li>
-            <a class="js-tab-address-book padder" href="#staking"><i class=
+            <a class="js-tab-address-book padder" href="/?a=listminting"><i class=
             "fa fa-usd m-r-sm text-white"></i><span class=
             "text-md text-white">Staking</span></a>
           </li>
@@ -99,7 +99,11 @@
                 <div class="progress bg-primary dk m-xs rounded" style=
                 "height: 12px;">
                   <?php if ($this->wallet_is_open ) {
-                    $width = ($this->info['blocks'] / $this->wallet->xpy_getbestheight()) * 100;
+                    if ($this->info['blocks'] <= $this->wallet->xpy_getbestheight()) {
+                      $width = ($this->info['blocks'] / $this->wallet->xpy_getbestheight()) * 100;
+                    } else {
+                      $width = 100;
+                    }
                   }
                   ?>
                   <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="<?php echo $width;?>"
@@ -110,9 +114,12 @@
               <div class="col-xs-4">
                 <div class="text-info block-height">
                   <?php if ($this->wallet_is_open ) {
-                    print $this->info['blocks'] . ' / '. $this->wallet->xpy_getbestheight() . ' Blocks';
+                    if ($this->info['blocks'] <= $this->wallet->xpy_getbestheight()) {
+                      print $this->info['blocks'] . ' / ' . $this->wallet->xpy_getbestheight() . ' Blocks';
+                    } else {
+                      print $this->info['blocks'] . ' / ' . $this->info['blocks'] . ' Blocks';
+                    }
                   }
-
                   ?>
                 </div>
               </div>
@@ -158,7 +165,8 @@
 
     <div class="app pos-rlt h-full">
       <div class="content h-full">
-    <pre>
+
+    <pre class="m-t-none m-b-none">
     <a href="./">Home</a>    <?php print date('r'); ?> 
     <?php if( $this->wallet_is_open ) {
 
