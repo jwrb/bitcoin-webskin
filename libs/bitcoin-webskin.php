@@ -610,7 +610,7 @@ class BitcoinWebskin {
 
   private function post_process_listminting(&$item, $key) {
   
-    $item['datetime'] = date('r', $item['time']);
+    $item['datetime'] = date('Y-m-d h:i:s', $item['time']);
 
     if( isset($item['amount']) ) {
       $item['amount'] = $this->num($item['amount']);
