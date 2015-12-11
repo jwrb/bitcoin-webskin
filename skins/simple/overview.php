@@ -61,7 +61,7 @@
         <i class="fa fa-arrow-right m-r-md"></i>SEND
       </div></a><a class=
       "btn btn-success w-full no-radius flex-fill flex-col" href=
-      "#receive">
+      "/?a=listreceivedbyaddress&minconf=1&includeempty=true">
       <div class="inner text-3x font-thin m-t-b-a">
         <i class="fa fa-arrow-left m-r-md"></i>RECEIVE
       </div></a>
